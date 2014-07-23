@@ -142,7 +142,7 @@ int main() {
 
     MM_render_one_buffer();
 
-	return 1;
+	return 0;
 }
 
 
