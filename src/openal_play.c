@@ -1,5 +1,11 @@
 
-
+// simple example of rendering audio using OpenAL 
+//
+// this populates an audio buffer then renders to default device (your speakers)
+// Size of buffer is calculated based on sample rate of 44100 for period of 4 seconds
+//
+// compile on unix :
+//
 // gcc -o openal_play   openal_play.c  -lopenal -lm
 
 #include <stdio.h>
