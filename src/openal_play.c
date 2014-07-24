@@ -1,5 +1,5 @@
 
-// simple example of rendering audio using OpenAL 
+// simple example of rendering audio using OpenAL in the c language
 //
 // this populates an audio buffer then renders to default device (your speakers)
 // Size of buffer is calculated based on sample rate of 44100 for period of 4 seconds
@@ -7,6 +7,11 @@
 // compile on unix :
 //
 // gcc -o openal_play   openal_play.c  -lopenal -lm
+//
+// library for OpenAL can be installed on linux using :
+//
+// sudo apt-get install libopenal-dev
+//
 
 #include <stdio.h>
 #include <stdlib.h>    // gives malloc
@@ -27,7 +32,7 @@ ALCcontext * openal_output_context;
 ALuint internal_buffer;
 ALuint streaming_source[1];
 
-int al_check_error(const char * given_label) {
+int al_check_error(const char * given_label) { // generic OpenAL error checker
 
     ALenum al_error;
     al_error = alGetError();
@@ -40,7 +45,7 @@ int al_check_error(const char * given_label) {
     return 0;
 }
 
-void MM_init_al() {
+void MM_init_al() { // initialize OpenAL
 
     const char * defname = alcGetString(NULL, ALC_DEFAULT_DEVICE_SPECIFIER);
 
@@ -54,7 +59,7 @@ void MM_init_al() {
     al_check_error("failed call to alGenBuffers");
 }
 
-void MM_exit_al() {
+void MM_exit_al() { // tear down OpenAL after rendering finishes
 
     // ALenum errorCode = 0;
 
@@ -76,47 +81,44 @@ void MM_exit_al() {
 
 void MM_render_one_buffer() {
 
-    /* Fill buffer with Sine-Wave */
+    // fill buffer with an audio curve
     // float freq = 440.f;
     float freq = 100.f;
     float incr_freq = 0.1f;
 
-    int seconds = 4;
+    int seconds = 4;	// this determines buffer size based on seconds of playback audio independent of sample rate
     // unsigned sample_rate = 22050;
     unsigned sample_rate = 44100;
     double my_pi = 3.14159;
     size_t buf_size = seconds * sample_rate;
 
-    short * samples = malloc(sizeof(short) * buf_size);
+    short * samples = malloc(sizeof(short) * buf_size); // allocates audio buffer memory
 
-   printf("\nhere is freq %f\n", freq);
+	printf("\nhere is freq %f\n", freq);
+
     int i=0;
     for(; i<buf_size; ++i) {
-        samples[i] = 32760 * sin( (2.f * my_pi * freq)/sample_rate * i );
 
-        freq += incr_freq;
-        // incr_freq += incr_freq;
-        // freq *= factor_freq;
+        samples[i] = 32760 * sin( (2.f * my_pi * freq)/sample_rate * i ); // populate audio curve data point
 
-        if (100.0 > freq || freq > 5000.0) {
+        freq += incr_freq; // jack around frequency ... just comment out this for sin curve
+
+        if (100.0 > freq || freq > 5000.0) { // toggle frequency increment if we reach min or max freq
 
             incr_freq *= -1.0f;
         }
     }
 
-    /* upload buffer to OpenAL */
+    // upload buffer to OpenAL
     alBufferData( internal_buffer, AL_FORMAT_MONO16, samples, buf_size, sample_rate);
     al_check_error("populating alBufferData");
 
-    free(samples);
+    free(samples); // release audio buffer memory after above upload into OpenAL internal buffer
 
-    /* Set-up sound source and play buffer */
-    // ALuint src = 0;
-    // alGenSources(1, &src);
-    // alSourcei(src, AL_BUFFER, internal_buffer);
+    /// Set-up sound source and play buffer
+
     alGenSources(1, & streaming_source[0]);
     alSourcei(streaming_source[0], AL_BUFFER, internal_buffer);
-    // alSourcePlay(src);
     alSourcePlay(streaming_source[0]);
 
     // ---------------------
@@ -137,10 +139,11 @@ void MM_render_one_buffer() {
 
     printf("end of playing\n");
 
-    /* Dealloc OpenAL */
-    MM_exit_al();
+    MM_exit_al();   // dealloc OpenAL
 
 }   //  MM_render_one_buffer
+
+// -----------
 
 int main() {
 
