@@ -1,7 +1,7 @@
 openal_synth_play
 =================
 
-simple c language usage of OpenAL which synthesizes an audio buffer then renders the sound using OpenAL
+simple c language usage of OpenAL which synthesizes sound by populating an audio buffer which it renders audibly using the open source library : OpenAL
 
 compile using :  
 
@@ -9,7 +9,9 @@ compile using :
 
 execute using :
 
-./openal_play # this will play back the buffer which has been loaded with 4 seconds of audio rendered at 44100 bytes per second
+./openal_play 
 
+library for OpenAL can be installed on linux using :
 
+    sudo apt-get install libopenal-dev
 

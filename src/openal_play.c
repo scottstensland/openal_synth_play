@@ -16,6 +16,8 @@
 #include <stdio.h>
 #include <stdlib.h>    // gives malloc
 #include <math.h>
+#include <unistd.h>		// sleep 
+
 
 
 #ifdef __APPLE__
@@ -72,9 +74,7 @@ void MM_exit_al() { // tear down OpenAL after rendering finishes
     // Clean-up
     alDeleteSources(1, &streaming_source[0]);
     alDeleteBuffers(16, &streaming_source[0]);
-    // errorCode = alGetError();
     alcMakeContextCurrent(NULL);
-    // errorCode = alGetError();
     alcDestroyContext(openal_output_context);
     alcCloseDevice(openal_output_device);
 }
