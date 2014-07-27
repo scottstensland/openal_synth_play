@@ -9,7 +9,7 @@ compile using :
 
 execute using :
 
-./openal_play 
+    ./openal_play 
 
 library for OpenAL can be installed on linux using :
 
